@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 // Check if the user has a valid token
 const token = localStorage.getItem("authToken");
 
@@ -16,7 +18,7 @@ if (!token) {
             localStorage.removeItem("authToken");
             window.location.href = "login.html";
         } else {
-            document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function() {
                 const userEmail = document.getElementById("userEmail");
                 if (userEmail) {
                     userEmail.textContent = payload.email;
@@ -58,7 +60,10 @@ function loadOpportunities(ngoId) {
                     listItem.innerHTML = `
                         <span>${opportunity.title} - ${new Date(opportunity.date).toDateString()} - ${opportunity.location}</span>
                         <span>Coordinator: ${opportunity.coordinator_name} (${opportunity.coordinator_email}, ${opportunity.coordinator_phone})</span>
-                        <button class="btn btn-danger btn-sm" onclick="deleteOpportunity(${opportunity.id})">Delete</button>
+                        <div>
+                            <button class="btn btn-success btn-sm" onclick="redirectToApplyPage(${opportunity.id})">Apply</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteOpportunity(${opportunity.id})">Delete</button>
+                        </div>
                     `;
 
                     list.appendChild(listItem);
@@ -68,6 +73,11 @@ function loadOpportunities(ngoId) {
         .catch(error => {
             console.error("Error fetching opportunities:", error);
         });
+}
+
+// Redirect user to the apply page
+function redirectToApplyPage(opportunityId) {
+    window.location.href = `apply.html?opportunity_id=${opportunityId}`;
 }
 
 // Submit a new opportunity with NGO ID
@@ -99,19 +109,19 @@ function submitOpportunity() {
         const opportunityData = { title, description, date, location, ngo_id: ngoId, coordinator_name: coordinatorName, coordinator_email: coordinatorEmail, coordinator_phone: coordinatorPhone };
 
         fetch("http://localhost:3000/api/opportunities", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(opportunityData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            loadOpportunities(ngoId);
-        })
-        .catch(error => console.error("Error submitting opportunity:", error));
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(opportunityData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadOpportunities(ngoId);
+            })
+            .catch(error => console.error("Error submitting opportunity:", error));
     } catch (error) {
         console.error("Error decoding token:", error);
         alert("Invalid session. Please log in again.");
@@ -132,18 +142,18 @@ function deleteOpportunity(id) {
     }
 
     fetch(`http://localhost:3000/api/opportunities/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        loadOpportunities(payload.ngo_id); // Refresh the list
-    })
-    .catch(error => console.error("Error deleting opportunity:", error));
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            loadOpportunities(payload.ngo_id); // Refresh the list
+        })
+        .catch(error => console.error("Error deleting opportunity:", error));
 }
 
 // Load data when the page loads

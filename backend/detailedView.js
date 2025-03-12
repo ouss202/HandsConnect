@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const express = require('express');
