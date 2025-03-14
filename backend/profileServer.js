@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -91,6 +92,8 @@ app.post("/update-profile", async (req, res) => {
 
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 =======
+=======
+>>>>>>> main
 /* eslint-disable no-undef */
 const express = require("express");
 const multer = require("multer");
